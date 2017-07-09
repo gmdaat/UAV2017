@@ -40,6 +40,7 @@ void FTC_FlyControl::Attitude_Outter_Loop(void)
 void FTC_FlyControl::Attitude_Inner_Loop(void)
 {
 	//to do
+	motor.writeMotor(1200,0,0,0);
 }	
 
 //飞行器高度外环控制
