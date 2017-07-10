@@ -1,4 +1,8 @@
 # Project files
+*/build
+*.bak
+*.json
+*.Mesngr
 *.bat
 *.txt
 *.uvproj
@@ -59,3 +63,4 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+FTC-Remoter-V1.0/build/ftcremoter.crf
