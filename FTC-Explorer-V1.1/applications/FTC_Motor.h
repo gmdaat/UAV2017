@@ -3,7 +3,7 @@
 
 #include "FTC_Config.h"
 
-#define MINTHROTTLE 1100
+#define MINTHROTTLE 0	//was 1100
 #define MAXTHROTTLE 1900
 
 class FTC_Motor

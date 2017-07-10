@@ -10,6 +10,10 @@ FTC_Motor motor;
 void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTermPitch, int32_t pidTermYaw)
 {
 	//to do
+	motorPWM[0] = throttle;
+
+	for (u8 i = 1; i < MAXMOTORS; i++)
+		motorPWM[i] = 0;
 	
 	int16_t maxMotor = motorPWM[0];
 	for (u8 i = 1; i < MAXMOTORS; i++)
