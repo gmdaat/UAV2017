@@ -1,8 +1,6 @@
 # Project files
 */build
 *.bak
-*.json
-*.Mesngr
 *.bat
 *.txt
 *.uvproj
