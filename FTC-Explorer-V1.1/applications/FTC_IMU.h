@@ -12,7 +12,7 @@ public:
 	
 	//欧拉角表示的飞行器姿态
 	Vector3f angle;
-	
+
 	Vector3f Gyro, Gyro_lpf, Acc, Acc_lpf; 
 
 	LPF2ndData_t Acc_lpf_2nd, Gyro_lpf_2nd;
@@ -35,6 +35,8 @@ public:
 private:
 
 	Quaternion Q;
+
+	Vector3f last_gyro, gravity, horizon;
 
 	int32_t accRatio;
 
