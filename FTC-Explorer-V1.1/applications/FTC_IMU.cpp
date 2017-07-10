@@ -92,7 +92,8 @@ Vector3f FTC_IMU::Get_Accel_Ef(void)
 //余弦矩阵更新姿态
 void FTC_IMU::DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	//to do
+	acc.get_rollpitch(angle);
+	acc.get_yaw(angle);
 }
 
 #define Kp 2.0f        //加速度权重，越大则向加速度测量值收敛越快
