@@ -13,7 +13,7 @@ enum {
     PIDMAG,
     PIDVELZ,
     PIDALT,
-		PIDITEMS
+	PIDITEMS
 };
 
 class FTC_FlyControl
@@ -55,6 +55,9 @@ private:
 
 	Vector3i velError;
 	int16_t altHoldDeadband;
+
+	int32_t out_ans[PIDITEMS];
+	int32_t inner_ans[PIDITEMS];
 
 };
 
