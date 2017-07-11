@@ -63,3 +63,7 @@ Module.symvers
 Mkfile.old
 dkms.conf
 FTC-Remoter-V1.0/build/ftcremoter.crf
+*.sln
+*.vcxproj
+*.filters
+*.user
