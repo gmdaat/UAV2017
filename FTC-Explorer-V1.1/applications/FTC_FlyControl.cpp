@@ -46,15 +46,16 @@ void FTC_FlyControl::Attitude_Outter_Loop(void) {
 //飞行器姿态内环控制
 void FTC_FlyControl::Attitude_Inner_Loop(void) {
 	static float deltaT = PID_INNER_LOOP_TIME * 1e-6; 
+
+	if (rc.Command[THROTTLE] < RC_MINTHROTTLE) {
+		pid[PIDROLL].reset_I(); 
+		pid[PIDPITCH].reset_I(); 
+		pid[PIDROLL].reset_I(); 
+	}
+
 	inner_ans[PIDROLL] = pid[PIDROLL].get_pid(out_ans[PIDROLL] - imu.Gyro_lpf.x, deltaT); 
 	inner_ans[PIDPITCH] = pid[PIDPITCH].get_pid(out_ans[PIDPITCH] - imu.Gyro_lpf.y, deltaT); 
 	inner_ans[PIDROLL] = pid[PIDROLL].get_pid(out_ans[PIDYAW] - imu.Gyro_lpf.z, deltaT); 
-
-	if (rc.Command[THROTTLE] < RC_MINTHROTTLE) {
-		inner_ans[PIDROLL].reset_I(); 
-		inner_ans[PIDPITCH].reset_I(); 
-		inner_ans[PIDROLL].reset_I(); 
-	}
 
 	motor.writeMotor(getThrottleCom(rc.Command[THROTTLE]), inner_ans[PIDROLL], inner_ans[PIDPITCH], inner_ans[PIDYAW]); 
 }
