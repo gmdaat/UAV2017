@@ -5,15 +5,15 @@
 **********************************************************************************/
 #include "FTC_IMU.h"
 
-#define zf 0.0f //zero float
+#define ZF 0.0f //zero float
 
-FTC_IMU imu;
+FTC_IMU imu; 
 
 FTC_IMU::FTC_IMU()
 {
-	last_gyro(zf, zf, zf);
-	gravity(zf, zf, ACC_1G);
-	horizon(ACC_1G, zf, zf);
+	last_gyro(ZF, ZF, ZF);
+	gravity(ZF, ZF, ACC_1G);
+	horizon(ACC_1G, ZF, ZF);
 }
 
 //IMU初始化
