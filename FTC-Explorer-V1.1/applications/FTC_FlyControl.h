@@ -59,6 +59,8 @@ private:
 	int32_t out_ans[PIDITEMS];
 	int32_t inner_ans[PIDITEMS];
 
+	uint16_t getThrottleCom(int16_t);
+
 };
 
 extern FTC_FlyControl fc;
