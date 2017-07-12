@@ -13,6 +13,7 @@ FTC_IMU::FTC_IMU() {
 	last_gyro(ZF, ZF, ZF);
 	gravity(ZF, ZF, ACC_1G);
 	horizon(300, ZF, ZF);
+	attitude_error_int(ZF, ZF, ZF);
 }
 
 //IMU初始化
@@ -134,7 +135,7 @@ void FTC_IMU::Quaternion_CF(Vector3f gyro, Vector3f acc, float deltaT) {
 	//更新四元数
 	Q.Runge_Kutta_1st(gyro, deltaT);//Gyro or gyro?
 
-		//四元数归一化
+	//四元数归一化
 	Q.normalize();
 
 	//四元数转欧拉角
