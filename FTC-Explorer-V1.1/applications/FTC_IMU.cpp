@@ -127,7 +127,20 @@ void FTC_IMU::DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 //四元数更新姿态
 void FTC_IMU::Quaternion_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	//to do
+	// 重力加速度归一化
+	
+	// 提取四元数的等效余弦矩阵中的重力分量
+
+	// 向量叉积得出姿态误差并积分
+
+	// 修正误差
+
+	// 更新四元数
+
+	// 四元数归一化
+
+	// 四元数转欧拉角
+
 }
 
 void FTC_IMU::filter_Init()
