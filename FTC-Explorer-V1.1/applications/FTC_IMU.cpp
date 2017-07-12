@@ -141,7 +141,7 @@ void FTC_IMU::Quaternion_CF(Vector3f gyro, Vector3f acc, float deltaT) {
 	Q.normalize();
 
 	//四元数转欧拉角
-	Q.to_euler(angle);
+	Q.to_euler(&angle.x, &angle.y, &angle.z);
 }
 
 void FTC_IMU::filter_Init() {
