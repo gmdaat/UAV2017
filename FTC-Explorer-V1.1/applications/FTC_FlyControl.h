@@ -6,21 +6,20 @@
 #define FLYANGLE_MAX 350  //最大飞行倾角35度
 
 enum {
-    PIDROLL,
-    PIDPITCH,
-    PIDYAW,
-    PIDANGLE,
-    PIDMAG,
-    PIDVELZ,
-    PIDALT,
+	PIDROLL,
+	PIDPITCH,
+	PIDYAW,
+	PIDANGLE,
+	PIDMAG,
+	PIDVELZ,
+	PIDALT,
 	PIDITEMS
 };
 
-class FTC_FlyControl
-{
+class FTC_FlyControl {
 
 public:
-	
+
 	FTC_PID pid[PIDITEMS];
 
 	Vector3i setVelocity;
@@ -48,7 +47,7 @@ public:
 	void Altitude_Inner_Loop(void);
 
 private:
-	
+
 	uint8_t rollPitchRate;
 	uint8_t yawRate;
 	int32_t RateError[3];

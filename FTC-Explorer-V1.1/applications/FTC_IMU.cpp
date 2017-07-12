@@ -7,18 +7,16 @@
 
 #define ZF 0.0f //zero float
 
-FTC_IMU imu; 
+FTC_IMU imu;
 
-FTC_IMU::FTC_IMU()
-{
+FTC_IMU::FTC_IMU() {
 	last_gyro(ZF, ZF, ZF);
 	gravity(ZF, ZF, ACC_1G);
 	horizon(300, ZF, ZF);
 }
 
 //IMU初始化
-void FTC_IMU::Init()
-{
+void FTC_IMU::Init() {
 	//滤波器参数初始化
 	filter_Init();
 	//传感器初始化
@@ -26,8 +24,7 @@ void FTC_IMU::Init()
 }
 
 //更新传感器数据
-void FTC_IMU::updateSensor()
-{
+void FTC_IMU::updateSensor() {
 	//读取加速度
 	mpu6050.Read_Acc_Data();
 	//读取角速度
@@ -39,8 +36,7 @@ void FTC_IMU::updateSensor()
 }
 
 //计算飞行器姿态
-void FTC_IMU::getAttitude()
-{
+void FTC_IMU::getAttitude() {
 	float deltaT;
 	Vector3d accTemp, gyroTemp;
 
@@ -65,7 +61,7 @@ void FTC_IMU::getAttitude()
 #endif
 
 	//计算实际测量的加速度和重力加速度的比值
-	accRatio = Acc_lpf.length_squared() * 100 / (ACC_1G * ACC_1G);
+	accRatio = Acc_lpf.length_squared()*100/(ACC_1G * ACC_1G);
 
 	deltaT = getDeltaT(GetSysTime_us());
 
@@ -78,8 +74,7 @@ void FTC_IMU::getAttitude()
 }
 
 //获取飞行器的加速度在地理坐标系的投影
-Vector3f FTC_IMU::Get_Accel_Ef(void)
-{
+Vector3f FTC_IMU::Get_Accel_Ef(void) {
 	Matrix3f dcm;
 	Vector3f anglerad;
 
@@ -93,15 +88,14 @@ Vector3f FTC_IMU::Get_Accel_Ef(void)
 }
 
 //余弦矩阵更新姿态
-void FTC_IMU::DCM_CF(Vector3f gyro, Vector3f acc, float deltaT)
-{
+void FTC_IMU::DCM_CF(Vector3f gyro, Vector3f acc, float deltaT) {
 	//余弦矩阵
 	Matrix3f dcm;
 	//来自陀螺仪的角速度的瞬时积分值
 	Vector3f sum_gyro;
 
 	//用Runge–Kutta法求得sum_gyro
-	sum_gyro = (last_gyro + gyro) * 0.5 * deltaT;
+	sum_gyro = (last_gyro+gyro) * 0.5 * deltaT;
 	//更新上次的角速度
 	last_gyro = gyro;
 
@@ -123,13 +117,12 @@ void FTC_IMU::DCM_CF(Vector3f gyro, Vector3f acc, float deltaT)
 #define Kp 2.0f   //加速度权重，越大则向加速度测量值收敛越快
 #define Ki 0.001f //误差积分增益
 //四元数更新姿态
-void FTC_IMU::Quaternion_CF(Vector3f gyro, Vector3f acc, float deltaT)
-{
+void FTC_IMU::Quaternion_CF(Vector3f gyro, Vector3f acc, float deltaT) {
 	//to do
+
 }
 
-void FTC_IMU::filter_Init()
-{
+void FTC_IMU::filter_Init() {
 	//加速度一阶低通滤波器系数计算
 	ftc.factor.acc_lpf = LPF_1st_Factor_Cal(IMU_LOOP_TIME * 1e-6, ACC_LPF_CUT);
 
@@ -143,16 +136,14 @@ void FTC_IMU::filter_Init()
 	ftc.factor.gyro_cf = CF_Factor_Cal(IMU_LOOP_TIME * 1e-6, GYRO_CF_TAU);
 }
 
-void FTC_IMU::sensor_Init()
-{
+void FTC_IMU::sensor_Init() {
 	//初始化MPU6050，1Khz采样率，98Hz低通滤波
 	mpu6050.Init(1000, 98);
 }
 
-float FTC_IMU::getDeltaT(uint32_t currentT)
-{
+float FTC_IMU::getDeltaT(uint32_t currentT) {
 	static uint32_t previousT;
-	float deltaT = (currentT - previousT) * 1e-6;
+	float deltaT = (currentT-previousT) * 1e-6;
 	previousT = currentT;
 
 	return deltaT;

@@ -8,13 +8,19 @@
 FTC_Motor motor;
 
 void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTermPitch, int32_t pidTermYaw) {
-	//to do
-	float T_matrix[6][4] = {{1,0.5,0.866,-1},
-							{1,-0.5,0.866,1},
-							{1,-1,0,-1},
-							{1,-0.5,-0.866,1},
-							{1,0.5,-0.866,-1},
-							{1,1,0,1}};
+	static float T_matrix[6][4] = {{1,0.5,0.866,-1},
+												{1,-0.5,-0.866,1},
+												{1,-0.5,0.866,1},
+												{1,0.5,-0.866,-1},
+												{1,1,0,1},
+												{1,1,0,-1}};
+
+	//static float T_matrix[6][4] = {{1,-0.5,-0.866,1} ,
+	//											{1,0.5,0.866,-1},
+	//											{1,-0.5,0.866,1},
+	//											{1,0.5,-0.866,-1},
+	//											{1,1,0,1},
+	//											{1,1,0,-1}};
 
 	for (u8 i = 0; i<MAXMOTORS; i++)
 		motorPWM[i] = T_matrix[i][0]*throttle+T_matrix[i][1]*pidTermRoll+T_matrix[i][2]*pidTermPitch+T_matrix[i][3]*pidTermYaw;
