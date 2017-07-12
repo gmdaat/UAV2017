@@ -55,17 +55,19 @@ void FTC_FlyControl::Attitude_Inner_Loop(void) {
 
 	inner_ans[PIDROLL] = pid[PIDROLL].get_pid(out_ans[PIDROLL] - imu.Gyro_lpf.x, deltaT); 
 	inner_ans[PIDPITCH] = pid[PIDPITCH].get_pid(out_ans[PIDPITCH] - imu.Gyro_lpf.y, deltaT); 
-	inner_ans[PIDROLL] = pid[PIDROLL].get_pid(out_ans[PIDYAW] - imu.Gyro_lpf.z, deltaT); 
+	inner_ans[PIDYAW] = pid[PIDYAW].get_pid(out_ans[PIDYAW] - imu.Gyro_lpf.z, deltaT); 
 
 	motor.writeMotor(getThrottleCom(rc.Command[THROTTLE]), inner_ans[PIDROLL], inner_ans[PIDPITCH], inner_ans[PIDYAW]); 
 }
 
 //飞行器高度外环控制
 void FTC_FlyControl::Altitude_Outter_Loop(void) {
+	//to do
 }
 
 //飞行器高度内环控制
 void FTC_FlyControl::Altitude_Inner_Loop(void) {
+	//to do
 }
 
 void FTC_FlyControl::AltHoldReset(void) {
@@ -73,8 +75,8 @@ void FTC_FlyControl::AltHoldReset(void) {
 }
 
 uint16_t FTC_FlyControl::getThrottleCom(int16_t throttle) {
-	uint16_t temp=(uint16_t)((float)throttle / (imu.angle.x > imu.angle.y?imu.angle.x:imu.angle.y)); 
-	return (temp>throttle?temp:throttle);
+	uint16_t temp = (uint16_t)((float)throttle / (imu.angle.x > imu.angle.y ? imu.angle.x : imu.angle.y));
+	return (temp > throttle) ? temp : throttle;
 }
 
 /************************ (C) COPYRIGHT 2015 FTC *****END OF FILE**********************/
