@@ -13,7 +13,7 @@ FTC_IMU::FTC_IMU()
 {
 	last_gyro(ZF, ZF, ZF);
 	gravity(ZF, ZF, ACC_1G);
-	horizon(ACC_1G, ZF, ZF);
+	horizon(300, ZF, ZF);
 }
 
 //IMU≥ı ºªØ

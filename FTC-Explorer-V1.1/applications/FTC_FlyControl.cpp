@@ -73,7 +73,8 @@ void FTC_FlyControl::AltHoldReset(void) {
 }
 
 uint16_t FTC_FlyControl::getThrottleCom(int16_t throttle) {
-	return (uint16_t)((float)throttle / (imu.angle.x > imu.angle.y?imu.angle.x:imu.angle.y)); 
+	uint16_t temp=(uint16_t)((float)throttle / (imu.angle.x > imu.angle.y?imu.angle.x:imu.angle.y)); 
+	return (temp>throttle?temp:throttle);
 }
 
 /************************ (C) COPYRIGHT 2015 FTC *****END OF FILE**********************/
