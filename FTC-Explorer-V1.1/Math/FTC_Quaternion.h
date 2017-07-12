@@ -44,7 +44,9 @@ public:
     void from_euler(float roll, float pitch, float yaw);
 
     //四元数转欧拉角
-    void to_euler(float *roll, float *pitch, float *yaw);
+	void to_euler(float *roll, float *pitch, float *yaw);
+
+	void to_euler(Vector3f &angle);
 };
 #endif // QUATERNION_H
 
