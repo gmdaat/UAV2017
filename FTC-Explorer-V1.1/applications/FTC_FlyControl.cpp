@@ -54,8 +54,11 @@ void FTC_FlyControl::Attitude_Outter_Loop(void) {
 //飞行器姿态内环控制
 void FTC_FlyControl::Attitude_Inner_Loop(void) {
 	static float deltaT = PID_INNER_LOOP_TIME * 1e-6;
+	///
+	float tiltAngle = constrain_float(max(abs(imu.angle.x), abs(imu.angle.y)), 0, 20);
+	///
 
-	if (rc.rawData[THROTTLE]<RC_MINCHECK) {
+	if (true){//(rc.rawData[THROTTLE]<RC_MINCHECK) {
 		pid[PIDROLL].reset_I();
 		pid[PIDPITCH].reset_I();
 		pid[PIDROLL].reset_I();
@@ -65,7 +68,14 @@ void FTC_FlyControl::Attitude_Inner_Loop(void) {
 	inner_ans[PIDPITCH] = pid[PIDPITCH].get_pid(RateError[PIDPITCH], deltaT);
 	inner_ans[PIDYAW] = -constrain_int32(inner_ans[YAW], -300-abs(rc.Command[YAW]), +300+abs(rc.Command[YAW]));
 
-	motor.writeMotor(getThrottleCom(rc.Command[THROTTLE]), inner_ans[ROLL], inner_ans[PITCH], inner_ans[YAW]);
+	///
+	//油门倾斜补偿
+	if (!ftc.f.ALTHOLD)
+		rc.Command[THROTTLE] = (rc.Command[THROTTLE]-1000)/cosf(radians(tiltAngle))+1000;
+	motor.writeMotor(rc.Command[THROTTLE], inner_ans[ROLL], inner_ans[PITCH], inner_ans[YAW]);
+	///
+
+	//motor.writeMotor(getThrottleCom(rc.Command[THROTTLE]), inner_ans[ROLL], inner_ans[PITCH], inner_ans[YAW]);
 }
 
 //飞行器高度外环控制
