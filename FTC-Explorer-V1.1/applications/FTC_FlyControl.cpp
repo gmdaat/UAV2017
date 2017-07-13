@@ -58,7 +58,7 @@ void FTC_FlyControl::Attitude_Inner_Loop(void) {
 	float tiltAngle = constrain_float(max(abs(imu.angle.x), abs(imu.angle.y)), 0, 20);
 	///
 
-	if (true){//(rc.rawData[THROTTLE]<RC_MINCHECK) {
+	if (true) {//(rc.rawData[THROTTLE]<RC_MINCHECK) {
 		pid[PIDROLL].reset_I();
 		pid[PIDPITCH].reset_I();
 		pid[PIDROLL].reset_I();
@@ -94,10 +94,7 @@ void FTC_FlyControl::AltHoldReset(void) {
 
 uint16_t FTC_FlyControl::getThrottleCom(int16_t throttle) {
 	return ((ftc.f.ALTHOLD) ? throttle :
-		((rc.Command[THROTTLE]-1000)/cosf(radians(imu.angle.x>imu.angle.y ? imu.angle.x : imu.angle.y))+1000));
-
-	/*uint16_t temp = (uint16_t) ((float) throttle/(imu.angle.x>imu.angle.y ? imu.angle.x : imu.angle.y));
-	return (temp>throttle) ? temp : throttle;*/
+		((rc.Command[THROTTLE]-1000)/cosf(radians(max(abs(imu.angle.x), abs(imu.angle.y))))+1000));
 }
 
 /************************ (C) COPYRIGHT 2015 FTC *****END OF FILE**********************/

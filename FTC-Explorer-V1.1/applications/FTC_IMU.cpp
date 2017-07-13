@@ -130,10 +130,10 @@ void FTC_IMU::Quaternion_CF(Vector3f gyro, Vector3f acc, float deltaT) {
 	attitude_error_int += attitude_error*Ki;
 
 	//修正误差
-	gyro += attitude_error*Kp+attitude_error_int;//Gyro or gyro?
+	gyro += attitude_error*Kp+attitude_error_int;
 
 	//更新四元数
-	Q.Runge_Kutta_1st(gyro, deltaT);//Gyro or gyro?
+	Q.Runge_Kutta_1st(gyro, deltaT);
 
 	//四元数归一化
 	Q.normalize();
