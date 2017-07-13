@@ -8,22 +8,13 @@
 FTC_Motor motor;
 
 void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTermPitch, int32_t pidTermYaw) {
-	static float T_matrix[6][4] = {{1,0.5,0.866,-1},
-												{1,-0.5,-0.866,1},
-												{1,-0.5,0.866,1},
-												{1,0.5,-0.866,-1},
-												{1,1,0,1},
-												{1,1,0,-1}};
 
-	//static float T_matrix[6][4] = {{1,-0.5,-0.866,1} ,
-	//											{1,0.5,0.866,-1},
-	//											{1,-0.5,0.866,1},
-	//											{1,0.5,-0.866,-1},
-	//											{1,1,0,1},
-	//											{1,1,0,-1}};
-
-	for (u8 i = 0; i<MAXMOTORS; i++)
-		motorPWM[i] = T_matrix[i][0]*throttle+T_matrix[i][1]*pidTermRoll+T_matrix[i][2]*pidTermPitch+T_matrix[i][3]*pidTermYaw;
+	motorPWM[2] = throttle-0.5 * pidTermRoll+0.866 *  pidTermPitch+pidTermYaw; //后右
+	motorPWM[1] = throttle-0.5 * pidTermRoll-0.866 *  pidTermPitch+pidTermYaw; //前右
+	motorPWM[0] = throttle+0.5 * pidTermRoll+0.866 *  pidTermPitch-pidTermYaw; //后左
+	motorPWM[3] = throttle+0.5 * pidTermRoll-0.866 *  pidTermPitch-pidTermYaw; //前左
+	motorPWM[5] = throttle-pidTermRoll-pidTermYaw;	//右
+	motorPWM[4] = throttle+pidTermRoll+pidTermYaw;	//左
 
 	int16_t maxMotor = motorPWM[0];
 	for (u8 i = 1; i<MAXMOTORS; i++) {

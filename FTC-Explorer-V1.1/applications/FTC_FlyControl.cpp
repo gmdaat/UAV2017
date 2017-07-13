@@ -54,26 +54,32 @@ void FTC_FlyControl::Attitude_Outter_Loop(void) {
 //飞行器姿态内环控制
 void FTC_FlyControl::Attitude_Inner_Loop(void) {
 	static float deltaT = PID_INNER_LOOP_TIME * 1e-6;
-	///
 	float tiltAngle = constrain_float(max(abs(imu.angle.x), abs(imu.angle.y)), 0, 20);
-	///
 
-	if (true) {//(rc.rawData[THROTTLE]<RC_MINCHECK) {
-		pid[PIDROLL].reset_I();
-		pid[PIDPITCH].reset_I();
-		pid[PIDROLL].reset_I();
+	//if (true) {//(rc.rawData[THROTTLE]<RC_MINCHECK) {
+	//	pid[PIDROLL].reset_I();
+	//	pid[PIDPITCH].reset_I();
+	//	pid[PIDROLL].reset_I();
+	//}
+
+	//inner_ans[PIDROLL] = pid[PIDROLL].get_pid(RateError[PIDROLL], deltaT);
+	//inner_ans[PIDPITCH] = pid[PIDPITCH].get_pid(RateError[PIDPITCH], deltaT);
+	//inner_ans[PIDYAW] = -constrain_int32(inner_ans[YAW], -300-abs(rc.Command[YAW]), +300+abs(rc.Command[YAW]));
+
+	for (u8 i = 0; i<3; i++) {
+		//当油门低于检查值时积分清零
+		if ((rc.rawData[THROTTLE])<RC_MINCHECK)
+			pid[i].reset_I();
+	
+		//得到内环PID输出
+		inner_ans[i] = pid[i].get_pid(RateError[i], PID_INNER_LOOP_TIME*1e-6);
 	}
+	inner_ans[YAW] = -constrain_int32(inner_ans[YAW], -300-abs(rc.Command[YAW]), +300+abs(rc.Command[YAW]));
 
-	inner_ans[PIDROLL] = pid[PIDROLL].get_pid(RateError[PIDROLL], deltaT);
-	inner_ans[PIDPITCH] = pid[PIDPITCH].get_pid(RateError[PIDPITCH], deltaT);
-	inner_ans[PIDYAW] = -constrain_int32(inner_ans[YAW], -300-abs(rc.Command[YAW]), +300+abs(rc.Command[YAW]));
-
-	///
 	//油门倾斜补偿
 	if (!ftc.f.ALTHOLD)
 		rc.Command[THROTTLE] = (rc.Command[THROTTLE]-1000)/cosf(radians(tiltAngle))+1000;
 	motor.writeMotor(rc.Command[THROTTLE], inner_ans[ROLL], inner_ans[PITCH], inner_ans[YAW]);
-	///
 
 	//motor.writeMotor(getThrottleCom(rc.Command[THROTTLE]), inner_ans[ROLL], inner_ans[PITCH], inner_ans[YAW]);
 }
