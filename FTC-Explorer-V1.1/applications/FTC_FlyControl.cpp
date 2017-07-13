@@ -59,8 +59,8 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 	
 	for(u8 i=0; i<3;i++)
 	{
-		//当油门低于检查值时积分清零
-		if ((rc.rawData[THROTTLE]) < RC_MINCHECK)	
+		//忽略I的结果
+		if (true)	
 			pid[i].reset_I();
 		
 		//得到内环PID输出
