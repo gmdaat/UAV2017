@@ -3,7 +3,7 @@
 
 #include "FTC_Config.h"
 
-#define FLYANGLE_MAX 250  //最大飞行倾角25度
+#define FLYANGLE_MAX 200  //最大飞行倾角20度
 
 enum {
     PIDROLL,
