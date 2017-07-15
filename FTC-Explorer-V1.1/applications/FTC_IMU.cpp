@@ -14,6 +14,7 @@ FTC_IMU::FTC_IMU()
 	last_gyro(ZF, ZF, ZF);
 	gravity(ZF, ZF, ACC_1G);
 	horizon(ACC_1G, ZF, ZF);
+	attitude_error_int(ZF, ZF, ZF);
 }
 
 //IMU初始化
@@ -127,7 +128,27 @@ void FTC_IMU::DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 //四元数更新姿态
 void FTC_IMU::Quaternion_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	//to do
+	//重力加速度归一化
+	acc.normalize();
+
+	//提取四元数的等效余弦矩阵中的重力分量
+	Q.vector_gravity(Q_gravity);
+
+	//向量叉积得出姿态误差并积分
+	attitude_error = acc.operator%(Q_gravity);
+	attitude_error_int += attitude_error*Ki;
+
+	//修正误差
+	gyro += attitude_error*Kp+attitude_error_int;//Gyro or gyro?
+
+	//更新四元数
+	Q.Runge_Kutta_1st(gyro, deltaT);//Gyro or gyro?
+
+	//四元数归一化
+	Q.normalize();
+
+	//四元数转欧拉角
+	Q.to_euler(&angle.x, &angle.y, &angle.z);
 }
 
 void FTC_IMU::filter_Init()
