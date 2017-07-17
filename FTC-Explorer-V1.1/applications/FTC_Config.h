@@ -69,6 +69,7 @@ public:
 			uint8_t ANGLE_MODE;
 			uint8_t ALTHOLD;
 			uint8_t LOWPOWER;
+			uint8_t THROWSTARTED;
 	}f;
 	
 	//Ö¸Ê¾µÆ

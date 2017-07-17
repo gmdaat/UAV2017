@@ -53,8 +53,15 @@ void FTC_RC::Cal_Command(void)
     tmp2 = tmp / 100;
 		
 		if(!ftc.f.ALTHOLD){
-			Command[THROTTLE] = lookupThrottleRC[tmp2] + (tmp - tmp2 * 100) * (lookupThrottleRC[tmp2 + 1] - lookupThrottleRC[tmp2]) / 100;    // [0;1000] -> expo -> [MINTHROTTLE;MAXTHROTTLE]
-			Command[THROTTLE] = constrain_uint16(rawData[THROTTLE], RC_MINCHECK, 2000);
+			if(ftc.f.THROWSTARTED)
+			{
+				Command[THROTTLE] = THROWSTART_THROTTLE;
+			}
+			else
+			{
+				Command[THROTTLE] = lookupThrottleRC[tmp2] + (tmp - tmp2 * 100) * (lookupThrottleRC[tmp2 + 1] - lookupThrottleRC[tmp2]) / 100;    // [0;1000] -> expo -> [MINTHROTTLE;MAXTHROTTLE]
+				Command[THROTTLE] = constrain_uint16(rawData[THROTTLE], RC_MINCHECK, 2000);
+			}
 		}
 		
 		//-------------------º½ÏòËø¶¨------------------

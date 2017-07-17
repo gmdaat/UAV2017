@@ -69,6 +69,18 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 	
 	PIDTerm[YAW] = -constrain_int32(PIDTerm[YAW], -300 - abs(rc.Command[YAW]), +300 + abs(rc.Command[YAW]));	
 		
+	//Å×·ÉÆô¶¯
+	if(!ftc.f.ARMED)
+	{
+		if(rc.rawData[THROTTLE] < RC_MINCHECK)
+		{
+			if(imu.Acc_lpf.z > MIN_THROWSTART_CHECK)
+			{
+				ftc.f.THROWSTARTED = 1; //Å×·É×´Ì¬
+			}
+		}
+	}
+	
 	//ÓÍÃÅÇãÐ±²¹³¥
 	if(!ftc.f.ALTHOLD)
 		rc.Command[THROTTLE] = (rc.Command[THROTTLE] - 1000) / cosf(radians(tiltAngle)) + 1000;

@@ -4,6 +4,7 @@
 #include "FTC_Config.h"
 
 #define FLYANGLE_MAX 200  //最大飞行倾角20度
+#define MIN_THROWSTART_CHECK 5000 //上抛感应加速度
 
 enum {
     PIDROLL,
