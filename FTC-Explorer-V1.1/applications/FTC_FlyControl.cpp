@@ -5,6 +5,8 @@
 **********************************************************************************/
 #include "FTC_FlyControl.h"
 
+#define ONE_SEC_ASCENDING 50
+
 FTC_FlyControl fc;
 
 FTC_FlyControl::FTC_FlyControl()
@@ -82,7 +84,7 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 				if(imu.Acc_lpf.z > threshold[i] && ftc.f.THROWSTARTED < i + 1)
 				{
 					ftc.f.THROWSTARTED = i + 1; //根据不同力度，进入不同抛飞状态
-					ascendingTime = 50 * (i + 1);
+					ascendingTime = ONE_SEC_ASCENDING * (i + 1);
 				}
 			}
 		}

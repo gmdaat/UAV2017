@@ -148,7 +148,10 @@ void FTC_RC::check_sticks(void)
 			if((stick_flag & YAW_H)&&(stick_flag & THR_L))
 			{
 				if(ftc.f.CALIBRATED)
+				{
 					ftc.f.ARMED = 1;	//½âËø
+					ftc.f.THROWSTARTED = 0; //³õÊ¼»¯Å×·É×´Ì¬
+				}
 				else
 				{
 					mpu6050.Gyro_CALIBRATED = 1;
