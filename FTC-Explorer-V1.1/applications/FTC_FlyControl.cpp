@@ -76,8 +76,12 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 		{
 			if(imu.Acc_lpf.z > MIN_THROWSTART_CHECK)
 			{
-				ftc.f.THROWSTARTED = 1; //ев╥ив╢л╛
+				ftc.f.THROWSTARTED = 1; //╫ЬхКев╥ив╢л╛
 			}
+		}
+		else
+		{
+			ftc.f.THROWSTARTED = 0; //мкЁЖев╥ив╢л╛
 		}
 	}
 	
