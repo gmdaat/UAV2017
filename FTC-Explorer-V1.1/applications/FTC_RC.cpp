@@ -55,9 +55,14 @@ void FTC_RC::Cal_Command(void)
 		if(!ftc.f.ALTHOLD){
 			if(ftc.f.THROWSTARTED)
 			{
-				Command[THROTTLE] = THROWSTART_THROTTLE;
-				if(!ftc.f.ASCENDINGTIME_REMAINS)
-					ftc.f.THROWSTARTED = 0;
+				if(ftc.f.ASCENDINGTIME_REMAINS)
+				{
+					Command[THROTTLE] = THROWSTART_THROTTLE;//高转速上升
+				}
+				else
+				{
+					Command[THROTTLE] = RC_MINCHECK - 200;//低转速下落
+				}
 			}
 			else
 			{
