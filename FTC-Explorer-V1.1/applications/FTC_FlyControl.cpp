@@ -70,7 +70,7 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 	PIDTerm[YAW] = -constrain_int32(PIDTerm[YAW], -300 - abs(rc.Command[YAW]), +300 + abs(rc.Command[YAW]));	
 		
 	//Å×·ÉÆô¶¯
-	if(!ftc.f.ARMED)
+	if(ftc.f.ARMED)
 	{
 		if(rc.rawData[THROTTLE] < RC_MINCHECK)
 		{
