@@ -197,7 +197,7 @@ void FTC_DT::Data_Exchange(void)
 	else if(f.send_senser)
 	{
 		f.send_senser = 0;
-		Send_Senser(imu.Acc.x,imu.Acc.y,imu.Acc.z,
+		Send_Senser(ftc.f.THROWSTARTED,imu.Acc.y,imu.Acc.z,
 								imu.Gyro.x,imu.Gyro.y,imu.Gyro.z,
 								0,0,0);
 	}	
