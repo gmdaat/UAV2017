@@ -4,7 +4,10 @@
 #include "FTC_Config.h"
 
 #define FLYANGLE_MAX 200  //最大飞行倾角20度
-#define MIN_THROWSTART_CHECK 5000 //上抛感应加速度
+#define MIN_THROWSTART_CHECK_1 5000 //上抛感应加速度
+#define MIN_THROWSTART_CHECK_2 12000 //上抛感应加速度
+#define MIN_THROWSTART_CHECK_3 18000 //上抛感应加速度
+#define MIN_THROWSTART_CHECK_4 24000 //上抛感应加速度
 
 enum {
     PIDROLL,
@@ -16,6 +19,10 @@ enum {
     PIDALT,
 		PIDITEMS
 };
+
+ //用于区别上抛力度的门限值
+static float threshold[4] = {MIN_THROWSTART_CHECK_1, MIN_THROWSTART_CHECK_2,
+				MIN_THROWSTART_CHECK_3, MIN_THROWSTART_CHECK_4};
 
 class FTC_FlyControl
 {

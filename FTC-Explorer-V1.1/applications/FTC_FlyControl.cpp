@@ -74,9 +74,12 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 	{
 		if(rc.rawData[THROTTLE] < RC_MINCHECK)
 		{
-			if(imu.Acc_lpf.z > MIN_THROWSTART_CHECK)
+			for(uint8_t i = 0; i <= 3; i++)
 			{
-				ftc.f.THROWSTARTED = 1; //进入抛飞状态
+				if(imu.Acc_lpf.z > threshold[i] && ftc.f.THROWSTARTED < i + 1)
+				{
+					ftc.f.THROWSTARTED = i + 1; //根据不同力度，进入不同抛飞状态
+				}
 			}
 		}
 		else
