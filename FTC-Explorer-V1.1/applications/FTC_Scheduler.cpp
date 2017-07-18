@@ -65,6 +65,9 @@ static void FTC_Loop_50Hz(void)	//20ms执行一次
 	
 	//飞行器高度内环控制
 	fc.Altitude_Inner_Loop();	
+
+	//抛飞状态时间更新
+	fc.ascendingTime_reduces();
 }
 
 void FTC_Loop(void)

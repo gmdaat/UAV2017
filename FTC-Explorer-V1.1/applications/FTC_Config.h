@@ -70,6 +70,7 @@ public:
 			uint8_t ALTHOLD;
 			uint8_t LOWPOWER;
 			uint8_t THROWSTARTED;
+			uint8_t ASCENDINGTIME_REMAINS;
 	}f;
 	
 	//Ö¸Ê¾µÆ

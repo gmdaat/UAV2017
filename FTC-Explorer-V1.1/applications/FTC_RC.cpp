@@ -56,6 +56,8 @@ void FTC_RC::Cal_Command(void)
 			if(ftc.f.THROWSTARTED)
 			{
 				Command[THROTTLE] = THROWSTART_THROTTLE;
+				if(!ftc.f.ASCENDINGTIME_REMAINS)
+					ftc.f.THROWSTARTED = 0;
 			}
 			else
 			{

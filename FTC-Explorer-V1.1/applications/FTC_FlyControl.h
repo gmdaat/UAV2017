@@ -38,6 +38,7 @@ public:
 	Vector3i velPIDTerm;
 
 	int32_t AltHold;
+	uint16_t ascendingTime;
 	FTC_FlyControl();
 
 	void PID_Reset(void);
@@ -55,6 +56,8 @@ public:
 	//高度内环控制
 	void Altitude_Inner_Loop(void);
 
+	//上升状态时间递减
+	void ascendingTime_reduces(void);
 private:
 	
 	uint8_t rollPitchRate;
