@@ -36,7 +36,7 @@ void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTe
 	if(!ftc.f.ARMED)	
 		ResetPWM();
 
-	if(!ftc.f.ALTHOLD && rc.rawData[THROTTLE] < RC_MINCHECK)
+	if(!ftc.f.THROWSTARTED && !ftc.f.ALTHOLD && rc.rawData[THROTTLE] < RC_MINCHECK)
 		ResetPWM();
 
 	//Ð´Èëµç»úPWM
