@@ -61,7 +61,7 @@ void FTC_RC::Cal_Command(void)
 				}
 				else
 				{
-					Command[THROTTLE] = RC_MINCHECK - 200;//低转速下落
+					Command[THROTTLE] = RC_MINCHECK;//低转速下落
 				}
 			}
 			else
