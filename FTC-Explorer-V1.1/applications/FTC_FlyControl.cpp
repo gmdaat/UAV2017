@@ -5,12 +5,17 @@
 **********************************************************************************/
 #include "FTC_FlyControl.h"
 
+#define ONE_SEC_ASCENDING 50
+
 FTC_FlyControl fc;
 
 FTC_FlyControl::FTC_FlyControl()
 {
 	rollPitchRate = 150;
 	yawRate = 50;
+
+	ftc.f.ASCENDINGTIME_REMAINS = 0;
+	ascendingTime = 0;
 	
 	altHoldDeadband = 100;
 	
@@ -74,9 +79,13 @@ void FTC_FlyControl::Attitude_Inner_Loop(void)
 	{
 		if(rc.rawData[THROTTLE] < RC_MINCHECK)
 		{
-			if(imu.Acc_lpf.z > MIN_THROWSTART_CHECK)
+			for(uint8_t i = 0; i <= 3; i++)
 			{
-				ftc.f.THROWSTARTED = 1; //进入抛飞状态
+				if(imu.Acc_lpf.z > threshold[i] && ftc.f.THROWSTARTED < i + 1)
+				{
+					ftc.f.THROWSTARTED = i + 1; //根据不同力度，进入不同抛飞状态
+					ascendingTime = ONE_SEC_ASCENDING * (i + 1);
+				}
 			}
 		}
 		else
@@ -103,6 +112,20 @@ void FTC_FlyControl::Altitude_Outter_Loop(void)
 void FTC_FlyControl::Altitude_Inner_Loop(void)
 {
 	//to do
+}
+
+//上升状态时间递减
+void FTC_FlyControl::ascendingTime_reduces(void)
+{
+	if(ascendingTime > 0)
+	{
+		ftc.f.ASCENDINGTIME_REMAINS = 1;
+		ascendingTime--;
+	}
+	else
+	{
+		ftc.f.ASCENDINGTIME_REMAINS = 0; //不再进行抛飞上升
+	}
 }
 
 void FTC_FlyControl::AltHoldReset(void)

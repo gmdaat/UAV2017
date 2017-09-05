@@ -55,7 +55,14 @@ void FTC_RC::Cal_Command(void)
 		if(!ftc.f.ALTHOLD){
 			if(ftc.f.THROWSTARTED)
 			{
-				Command[THROTTLE] = THROWSTART_THROTTLE;
+				if(ftc.f.ASCENDINGTIME_REMAINS)
+				{
+					Command[THROTTLE] = THROWSTART_THROTTLE;//高转速上升
+				}
+				else
+				{
+					Command[THROTTLE] = RC_MINCHECK;//低转速下落
+				}
 			}
 			else
 			{
@@ -141,7 +148,10 @@ void FTC_RC::check_sticks(void)
 			if((stick_flag & YAW_H)&&(stick_flag & THR_L))
 			{
 				if(ftc.f.CALIBRATED)
+				{
 					ftc.f.ARMED = 1;	//解锁
+					ftc.f.THROWSTARTED = 0; //初始化抛飞状态
+				}
 				else
 				{
 					mpu6050.Gyro_CALIBRATED = 1;
