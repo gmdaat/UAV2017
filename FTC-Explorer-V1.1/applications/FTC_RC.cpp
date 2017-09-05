@@ -53,8 +53,22 @@ void FTC_RC::Cal_Command(void)
     tmp2 = tmp / 100;
 		
 		if(!ftc.f.ALTHOLD){
-			Command[THROTTLE] = lookupThrottleRC[tmp2] + (tmp - tmp2 * 100) * (lookupThrottleRC[tmp2 + 1] - lookupThrottleRC[tmp2]) / 100;    // [0;1000] -> expo -> [MINTHROTTLE;MAXTHROTTLE]
-			Command[THROTTLE] = constrain_uint16(rawData[THROTTLE], RC_MINCHECK, 2000);
+			if(ftc.f.THROWSTARTED)
+			{
+				if(ftc.f.ASCENDINGTIME_REMAINS)
+				{
+					Command[THROTTLE] = THROWSTART_THROTTLE;//高转速上升
+				}
+				else
+				{
+					Command[THROTTLE] = RC_MINCHECK;//低转速下落
+				}
+			}
+			else
+			{
+				Command[THROTTLE] = lookupThrottleRC[tmp2] + (tmp - tmp2 * 100) * (lookupThrottleRC[tmp2 + 1] - lookupThrottleRC[tmp2]) / 100;    // [0;1000] -> expo -> [MINTHROTTLE;MAXTHROTTLE]
+				Command[THROTTLE] = constrain_uint16(rawData[THROTTLE], RC_MINCHECK, 2000);
+			}
 		}
 		
 		//-------------------航向锁定------------------
@@ -134,7 +148,10 @@ void FTC_RC::check_sticks(void)
 			if((stick_flag & YAW_H)&&(stick_flag & THR_L))
 			{
 				if(ftc.f.CALIBRATED)
+				{
 					ftc.f.ARMED = 1;	//解锁
+					ftc.f.THROWSTARTED = 0; //初始化抛飞状态
+				}
 				else
 				{
 					mpu6050.Gyro_CALIBRATED = 1;

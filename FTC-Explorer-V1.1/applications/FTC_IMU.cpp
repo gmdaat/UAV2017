@@ -5,10 +5,16 @@
 **********************************************************************************/
 #include "FTC_IMU.h"
 
+#define ZF 0.0f //zero float
+
 FTC_IMU imu; 
 
 FTC_IMU::FTC_IMU()
 {
+	last_gyro(ZF, ZF, ZF);
+	gravity(ZF, ZF, ACC_1G);
+	horizon(ACC_1G, ZF, ZF);
+	attitude_error_int(ZF, ZF, ZF);
 }
 
 //IMU初始化
@@ -92,7 +98,29 @@ Vector3f FTC_IMU::Get_Accel_Ef(void)
 //余弦矩阵更新姿态
 void FTC_IMU::DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	//to do
+	//余弦矩阵
+	Matrix3f dcm;
+	//来自陀螺仪的角速度的瞬时积分值
+	Vector3f sum_gyro;
+
+	//用Runge–Kutta法求得sum_gyro
+	sum_gyro = (last_gyro + gyro) * 0.5 * deltaT;
+	//更新上次的角速度
+	last_gyro = gyro;
+
+	//构建余弦矩阵
+	dcm.from_euler(sum_gyro);
+
+	//求得重力加速度旋转至BCS（Body Coordinate System）的向量
+	gravity = dcm * gravity;
+	//求得水平方向加速旋转至BCS的向量
+	horizon = dcm * horizon;
+	//将旋转后的重力加速度与加速度融合
+	gravity = CF_1st(gravity, acc, CF_Factor_Cal(deltaT, GYRO_CF_TAU));
+
+	//求得欧拉角
+	gravity.get_rollpitch(angle);
+	horizon.get_yaw(angle);
 }
 
 #define Kp 2.0f        //加速度权重，越大则向加速度测量值收敛越快
@@ -100,7 +128,27 @@ void FTC_IMU::DCM_CF(Vector3f gyro,Vector3f acc, float deltaT)
 //四元数更新姿态
 void FTC_IMU::Quaternion_CF(Vector3f gyro,Vector3f acc, float deltaT)
 {
-	//to do
+	//重力加速度归一化
+	acc.normalize();
+
+	//提取四元数的等效余弦矩阵中的重力分量
+	Q.vector_gravity(Q_gravity);
+
+	//向量叉积得出姿态误差并积分
+	attitude_error = acc.operator%(Q_gravity);
+	attitude_error_int += attitude_error*Ki;
+
+	//修正误差
+	gyro += attitude_error*Kp+attitude_error_int;//Gyro or gyro?
+
+	//更新四元数
+	Q.Runge_Kutta_1st(gyro, deltaT);//Gyro or gyro?
+
+	//四元数归一化
+	Q.normalize();
+
+	//四元数转欧拉角
+	Q.to_euler(&angle.x, &angle.y, &angle.z);
 }
 
 void FTC_IMU::filter_Init()

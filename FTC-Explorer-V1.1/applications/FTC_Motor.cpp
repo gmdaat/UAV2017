@@ -9,7 +9,13 @@ FTC_Motor motor;
 
 void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTermPitch, int32_t pidTermYaw)
 {
-	//to do
+	//六轴X型
+	motorPWM[2] = throttle - 0.5 * pidTermRoll + 0.866 *  pidTermPitch + pidTermYaw; //后右
+	motorPWM[1] = throttle - 0.5 * pidTermRoll - 0.866 *  pidTermPitch + pidTermYaw; //前右
+	motorPWM[0] = throttle + 0.5 * pidTermRoll + 0.866 *  pidTermPitch - pidTermYaw; //后左
+	motorPWM[3] = throttle + 0.5 * pidTermRoll - 0.866 *  pidTermPitch - pidTermYaw; //前左
+	motorPWM[5] = throttle - pidTermRoll - pidTermYaw;	//右
+	motorPWM[4] = throttle + pidTermRoll + pidTermYaw;	//左
 	
 	int16_t maxMotor = motorPWM[0];
 	for (u8 i = 1; i < MAXMOTORS; i++)
@@ -30,7 +36,7 @@ void FTC_Motor::writeMotor(uint16_t throttle, int32_t pidTermRoll, int32_t pidTe
 	if(!ftc.f.ARMED)	
 		ResetPWM();
 
-	if(!ftc.f.ALTHOLD && rc.rawData[THROTTLE] < RC_MINCHECK)
+	if(!ftc.f.THROWSTARTED && !ftc.f.ALTHOLD && rc.rawData[THROTTLE] < RC_MINCHECK)
 		ResetPWM();
 
 	//写入电机PWM

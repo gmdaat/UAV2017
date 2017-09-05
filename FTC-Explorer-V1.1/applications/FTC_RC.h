@@ -11,7 +11,8 @@
 #define RC_RATE  			50
 #define RC_EXPO  			50
 #define THR_MID  			50
-#define THR_EXPO 			0		
+#define THR_EXPO 			0	
+#define THROWSTART_THROTTLE 1500	
 
 #define PITCH_LOOKUP_LENGTH 7
 #define THROTTLE_LOOKUP_LENGTH 12

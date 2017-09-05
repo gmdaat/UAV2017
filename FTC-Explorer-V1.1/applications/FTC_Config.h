@@ -14,8 +14,8 @@
 #include "FTC_Param.h"
 
 /*----------------------IMU--------------------*/
-#define FTC_IMU_USE_DCM_CF
-//#define FTC_IMU_USE_Quaternions_CF
+// #define FTC_IMU_USE_DCM_CF
+#define FTC_IMU_USE_Quaternions_CF
 
 //#define FTC_IMU_USE_LPF_1st
 #define FTC_IMU_USE_LPF_2nd
@@ -69,6 +69,8 @@ public:
 			uint8_t ANGLE_MODE;
 			uint8_t ALTHOLD;
 			uint8_t LOWPOWER;
+			uint8_t THROWSTARTED;
+			uint8_t ASCENDINGTIME_REMAINS;
 	}f;
 	
 	//Ö¸Ê¾µÆ

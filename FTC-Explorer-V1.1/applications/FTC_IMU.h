@@ -36,6 +36,10 @@ private:
 
 	Quaternion Q;
 
+	Vector3f last_gyro, gravity, horizon;
+	
+	Vector3f Q_gravity,attitude_error,attitude_error_int;
+	
 	int32_t accRatio;
 
 	float getDeltaT(uint32_t time);

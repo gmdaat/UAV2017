@@ -5,12 +5,17 @@
 **********************************************************************************/
 #include "FTC_FlyControl.h"
 
+#define ONE_SEC_ASCENDING 50
+
 FTC_FlyControl fc;
 
 FTC_FlyControl::FTC_FlyControl()
 {
 	rollPitchRate = 150;
 	yawRate = 50;
+
+	ftc.f.ASCENDINGTIME_REMAINS = 0;
+	ascendingTime = 0;
 	
 	altHoldDeadband = 100;
 	
@@ -33,14 +38,69 @@ void FTC_FlyControl::PID_Reset(void)
 //飞行器姿态外环控制
 void FTC_FlyControl::Attitude_Outter_Loop(void)
 {
-	//to do
+	int32_t	errorAngle[2];
+	Vector3f Gyro_ADC;
+	
+	//计算角度误差值
+	errorAngle[ROLL] = constrain_int32((rc.Command[ROLL] * 2) , -((int)FLYANGLE_MAX), +FLYANGLE_MAX) - imu.angle.x * 10; 
+	errorAngle[PITCH] = constrain_int32((rc.Command[PITCH] * 2) , -((int)FLYANGLE_MAX), +FLYANGLE_MAX) - imu.angle.y * 10; 
+	errorAngle[ROLL] = applyDeadband(errorAngle[ROLL], 2);
+	errorAngle[PITCH] = applyDeadband(errorAngle[PITCH], 2);
+	
+	//获取角速度
+	Gyro_ADC = imu.Gyro_lpf / 4.0f;
+	
+	//得到外环PID输出
+	RateError[ROLL] = pid[PIDANGLE].get_p(errorAngle[ROLL]) - Gyro_ADC.x;
+	RateError[PITCH] = pid[PIDANGLE].get_p(errorAngle[PITCH]) - Gyro_ADC.y;
+	RateError[YAW] = ((int32_t)(yawRate) * rc.Command[YAW]) / 32 - Gyro_ADC.z;		
 }
 
 //飞行器姿态内环控制
 void FTC_FlyControl::Attitude_Inner_Loop(void)
 {
-	//to do
-}	
+	int32_t PIDTerm[3];
+	float tiltAngle = constrain_float( max(abs(imu.angle.x), abs(imu.angle.y)), 0 ,20);
+	
+	for(u8 i=0; i<3;i++)
+	{
+		//当油门低于检查值时积分清零
+		if ((rc.rawData[THROTTLE]) < RC_MINCHECK)	
+			pid[i].reset_I();
+		
+		//得到内环PID输出
+		PIDTerm[i] = pid[i].get_pid(RateError[i], PID_INNER_LOOP_TIME*1e-6);
+	}
+	
+	PIDTerm[YAW] = -constrain_int32(PIDTerm[YAW], -300 - abs(rc.Command[YAW]), +300 + abs(rc.Command[YAW]));	
+		
+	//抛飞启动
+	if(ftc.f.ARMED)
+	{
+		if(rc.rawData[THROTTLE] < RC_MINCHECK)
+		{
+			for(uint8_t i = 0; i <= 3; i++)
+			{
+				if(imu.Acc_lpf.z > threshold[i] && ftc.f.THROWSTARTED < i + 1)
+				{
+					ftc.f.THROWSTARTED = i + 1; //根据不同力度，进入不同抛飞状态
+					ascendingTime = ONE_SEC_ASCENDING * (i + 1);
+				}
+			}
+		}
+		else
+		{
+			ftc.f.THROWSTARTED = 0; //退出抛飞状态
+		}
+	}
+	
+	//油门倾斜补偿
+	if(!ftc.f.ALTHOLD)
+		rc.Command[THROTTLE] = (rc.Command[THROTTLE] - 1000) / cosf(radians(tiltAngle)) + 1000;
+	
+	//PID输出转为电机控制量
+	motor.writeMotor(rc.Command[THROTTLE], PIDTerm[ROLL], PIDTerm[PITCH], PIDTerm[YAW]);
+}
 
 //飞行器高度外环控制
 void FTC_FlyControl::Altitude_Outter_Loop(void)
@@ -52,6 +112,20 @@ void FTC_FlyControl::Altitude_Outter_Loop(void)
 void FTC_FlyControl::Altitude_Inner_Loop(void)
 {
 	//to do
+}
+
+//上升状态时间递减
+void FTC_FlyControl::ascendingTime_reduces(void)
+{
+	if(ascendingTime > 0)
+	{
+		ftc.f.ASCENDINGTIME_REMAINS = 1;
+		ascendingTime--;
+	}
+	else
+	{
+		ftc.f.ASCENDINGTIME_REMAINS = 0; //不再进行抛飞上升
+	}
 }
 
 void FTC_FlyControl::AltHoldReset(void)
